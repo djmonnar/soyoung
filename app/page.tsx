@@ -1,481 +1,417 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import {
-  Star, CheckCircle, ChevronDown, Sparkles,
-  MapPin, ArrowRight, Camera, Hash, Globe, Heart,
-  TrendingUp, Users, MessageCircle, BarChart3, Play, Menu, X
+  ArrowRight,
+  BarChart3,
+  BookOpenText,
+  Camera,
+  CheckCircle2,
+  ChevronRight,
+  Clapperboard,
+  Compass,
+  Crown,
+  Gem,
+  HeartHandshake,
+  MapPin,
+  Menu,
+  MessageCircle,
+  PenLine,
+  Phone,
+  Play,
+  SearchCheck,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Store,
+  WandSparkles,
+  X,
 } from "lucide-react";
 
-function InstagramIcon({ size = 20, className = "" }: { size?: number; className?: string }) {
+type IconType = typeof Sparkles;
+
+const navItems = [
+  { href: "#portfolio", label: "포트폴리오" },
+  { href: "#services", label: "서비스" },
+  { href: "#clients", label: "클라이언트" },
+  { href: "#pricing", label: "가격" },
+  { href: "#contact", label: "문의" },
+];
+
+const stats = [
+  { label: "진행 업체", value: "16+", icon: Store, tone: "rose" },
+  { label: "월 콘텐츠", value: "60+", icon: Camera, tone: "sky" },
+  { label: "운영 채널", value: "SNS/Blog/Place", icon: Compass, tone: "mint" },
+  { label: "지역", value: "진주·창원", icon: MapPin, tone: "violet" },
+];
+
+const services: {
+  title: string;
+  desc: string;
+  tags: string[];
+  icon: IconType;
+  level: string;
+  color: string;
+}[] = [
+  {
+    title: "인스타그램 운영",
+    desc: "피드 톤앤매너, 해시태그, 업로드 흐름을 매장 성격에 맞춰 꾸준히 관리합니다.",
+    tags: ["피드 기획", "계정 관리", "해시태그"],
+    icon: Camera,
+    level: "SOCIAL MAGE",
+    color: "from-rose-300 to-pink-400",
+  },
+  {
+    title: "릴스·숏폼 제작",
+    desc: "공간, 메뉴, 시술 장면을 짧고 선명하게 보여주는 로컬형 숏폼 콘텐츠를 만듭니다.",
+    tags: ["릴스", "촬영 구성", "편집"],
+    icon: Clapperboard,
+    level: "REELS ARCHER",
+    color: "from-sky-300 to-cyan-400",
+  },
+  {
+    title: "블로그 포스팅",
+    desc: "검색 유입을 고려한 키워드와 방문 이유를 자연스럽게 엮어 포스팅합니다.",
+    tags: ["SEO", "키워드", "후기형 글"],
+    icon: BookOpenText,
+    level: "STORY CLERIC",
+    color: "from-amber-200 to-orange-300",
+  },
+  {
+    title: "네이버 플레이스 관리",
+    desc: "처음 방문하는 고객이 안심할 수 있도록 정보, 사진, 소개 문구를 정리합니다.",
+    tags: ["플레이스", "로컬 검색", "매장 정보"],
+    icon: SearchCheck,
+    level: "PLACE GUARD",
+    color: "from-emerald-200 to-teal-400",
+  },
+];
+
+const portfolio = [
+  {
+    name: "진주 옳커피",
+    type: "카페",
+    quest: "따뜻한 커피 무드와 동네 단골 감성을 피드로 정리",
+    mission: "인스타그램 운영 · 콘텐츠 기획",
+    kind: "cafe",
+  },
+  {
+    name: "창원 설레움 55테라스",
+    type: "카페·테라스",
+    quest: "테라스 공간감을 살린 릴스와 방문 욕구를 만드는 이미지 구성",
+    mission: "릴스 제작 · 로컬 노출",
+    kind: "terrace",
+  },
+  {
+    name: "진주 네일 도로시",
+    type: "뷰티",
+    quest: "시술 디테일이 또렷하게 보이는 컬러 중심 계정 톤 정리",
+    mission: "피드 브랜딩 · 포스팅",
+    kind: "nail",
+  },
+  {
+    name: "진주 차크란 에스테틱",
+    type: "에스테틱",
+    quest: "차분한 신뢰감과 관리 전문성을 함께 보여주는 콘텐츠 설계",
+    mission: "SNS 운영 · 플레이스 관리",
+    kind: "spa",
+  },
+  {
+    name: "진주 송화한정식",
+    type: "외식",
+    quest: "상차림의 풍성함과 모임 수요를 연결하는 검색형 콘텐츠",
+    mission: "블로그 · 네이버 플레이스",
+    kind: "dining",
+  },
+  {
+    name: "진주 교방한우",
+    type: "한우·외식",
+    quest: "메뉴 신뢰도와 프리미엄 식사 경험을 또렷하게 전달",
+    mission: "콘텐츠 기획 · 리뷰 동선",
+    kind: "beef",
+  },
+  {
+    name: "화담 건축인테리어",
+    type: "인테리어",
+    quest: "시공 감각과 공간 변화를 보기 쉽게 정리한 포트폴리오형 운영",
+    mission: "SNS 포트폴리오 · 블로그",
+    kind: "interior",
+  },
+  {
+    name: "그레이 로제 제시뷰티",
+    type: "헤어·뷰티",
+    quest: "고급스러운 뷰티 무드를 유지하며 계정 첫인상을 개선",
+    mission: "브랜드 무드 · 숏폼",
+    kind: "salon",
+  },
+];
+
+const process = [
+  { title: "상담", desc: "매장 목표와 현재 채널 상태 확인", icon: MessageCircle },
+  { title: "기획", desc: "콘셉트, 업종 키워드, 월간 콘텐츠 구성", icon: PenLine },
+  { title: "제작", desc: "피드, 릴스, 블로그, 플레이스 소재 제작", icon: WandSparkles },
+  { title: "업로드", desc: "채널별 업로드와 노출 흐름 정리", icon: Play },
+  { title: "관리/개선", desc: "반응 확인 후 다음 콘텐츠 방향 보정", icon: BarChart3 },
+];
+
+const pricing = [
+  {
+    name: "월정기 관리",
+    price: "300,000원",
+    badge: "BEST ITEM",
+    desc: "인스타그램 피드, 공지, 릴스, 계정 관리와 네이버 플레이스 관리를 함께 진행합니다.",
+    points: ["월간 운영 방향 제안", "콘텐츠 제작 및 업로드", "채널 상태 점검"],
+    featured: true,
+  },
+  {
+    name: "블로그 포스팅",
+    price: "30,000~50,000원",
+    badge: "SEARCH SCROLL",
+    desc: "검색 키워드와 매장 강점을 반영한 네이버 블로그 포스팅 단건 패키지입니다.",
+    points: ["키워드 기반 글 구성", "사진 흐름 정리", "업로드 완료 보고"],
+    featured: false,
+  },
+  {
+    name: "진주어때 패키지",
+    price: "280,000원",
+    badge: "LOCAL BOOST",
+    desc: "진주어때 채널 연계 릴스 제작과 로컬 고객 노출을 위한 패키지입니다.",
+    points: ["채널 연계 노출", "릴스 제작", "지역 타깃 홍보"],
+    featured: false,
+  },
+];
+
+function InstagramIcon({ size = 18 }: { size?: number }) {
   return (
     <svg
-      width={size} height={size} viewBox="0 0 24 24"
-      fill="none" stroke="currentColor" strokeWidth={2}
-      strokeLinecap="round" strokeLinejoin="round"
-      className={className}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      aria-hidden="true"
     >
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <rect x="2" y="2" width="20" height="20" rx="5" />
       <circle cx="12" cy="12" r="4" />
       <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
     </svg>
   );
 }
 
-const Instagram = InstagramIcon;
-
-// ─── Data ────────────────────────────────────────────────────────────────────
-
-const CLIENTS = [
-  { name: "옳커피", area: "진주", emoji: "☕" },
-  { name: "설레움 55테라스", area: "창원", emoji: "🌿" },
-  { name: "뷰티 앤 힐링", area: "대안", emoji: "💆" },
-  { name: "3시15분", area: "신안", emoji: "⏰" },
-  { name: "화담 건축인테리어", area: "진주", emoji: "🏠" },
-  { name: "송화한정식", area: "진주", emoji: "🍱" },
-  { name: "교방한우", area: "진주", emoji: "🥩" },
-  { name: "설레움 55", area: "진주", emoji: "🌸" },
-  { name: "차크란 에스테틱", area: "진주", emoji: "✨" },
-  { name: "그레이 로제 제시뷰티", area: "진주", emoji: "💄" },
-  { name: "네일 도로시", area: "진주", emoji: "💅" },
-  { name: "래푸스", area: "대안", emoji: "🌹" },
-  { name: "클라운지", area: "평거", emoji: "🛋️" },
-  { name: "핸디드 홈케어", area: "진주", emoji: "🏡" },
-  { name: "호박오리", area: "평거", emoji: "🍲" },
-  { name: "호박오리", area: "초전", emoji: "🍲" },
-];
-
-const SERVICES = [
-  {
-    icon: Instagram,
-    title: "인스타그램 관리",
-    desc: "트렌디한 피드 기획부터 릴스 제작, 해시태그 전략까지 계정 성장을 위한 전방위 관리",
-    tags: ["피드 기획", "릴스 제작", "해시태그"],
-    color: "from-pink-400 to-rose-400",
-    bg: "from-pink-50 to-rose-50",
-  },
-  {
-    icon: Globe,
-    title: "블로그 포스팅",
-    desc: "SEO 최적화된 네이버 블로그 포스팅으로 검색 노출을 극대화하는 전략적 콘텐츠 작성",
-    tags: ["SEO 최적화", "키워드 분석", "콘텐츠 기획"],
-    color: "from-fuchsia-400 to-pink-400",
-    bg: "from-fuchsia-50 to-pink-50",
-  },
-  {
-    icon: MapPin,
-    title: "네이버 플레이스",
-    desc: "지역 검색 상위 노출을 위한 플레이스 최적화 및 리뷰 관리로 오프라인 방문객 유입 증대",
-    tags: ["플레이스 최적화", "리뷰 관리", "지역 노출"],
-    color: "from-rose-400 to-pink-500",
-    bg: "from-rose-50 to-pink-50",
-  },
-  {
-    icon: Play,
-    title: "진주어때 채널",
-    desc: "진주 지역 대표 채널 '진주어때'와 연계한 릴스 제작 및 게시물 업로드로 로컬 마케팅 강화",
-    tags: ["릴스 제작", "로컬 마케팅", "채널 연계"],
-    color: "from-pink-500 to-fuchsia-500",
-    bg: "from-pink-50 to-fuchsia-50",
-  },
-];
-
-const STATS = [
-  { label: "관리 업체", value: "16+", icon: Users },
-  { label: "월 게시물", value: "60+", icon: Camera },
-  { label: "팔로워 증가율", value: "↑300%", icon: TrendingUp },
-  { label: "평균 참여율", value: "8%+", icon: Heart },
-];
-
-const PRICING = [
-  {
-    name: "월정기 관리",
-    price: "300,000",
-    unit: "/ 월",
-    highlight: true,
-    badge: "BEST",
-    items: [
-      "인스타그램 피드 게시글 작성",
-      "공지사항 업로드",
-      "동영상 (릴스) 제작",
-      "인스타그램 계정 전체 관리",
-      "네이버 플레이스 관리",
-    ],
-  },
-  {
-    name: "블로그 포스팅",
-    price: "30,000 ~ 50,000",
-    unit: "/ 건",
-    highlight: false,
-    badge: "단건",
-    items: [
-      "SEO 최적화 키워드 포함",
-      "네이버 블로그 포스팅",
-      "사진 편집 및 레이아웃",
-      "업로드 완료 보고",
-    ],
-  },
-  {
-    name: "진주어때 패키지",
-    price: "280,000",
-    unit: "릴스 제작",
-    highlight: false,
-    badge: "채널",
-    items: [
-      "진주어때 채널 릴스 제작",
-      "게시물 업로드: 150,000원",
-      "로컬 타겟 마케팅",
-      "채널 연계 노출",
-    ],
-    sub: "게시물 업로드 별도 150,000원",
-  },
-];
-
-// ─── Components ──────────────────────────────────────────────────────────────
-
-function Navbar() {
+function Header() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const links = [
-    { href: "#about", label: "소개" },
-    { href: "#services", label: "서비스" },
-    { href: "#clients", label: "클라이언트" },
-    { href: "#pricing", label: "가격안내" },
-    { href: "#contact", label: "문의하기" },
-  ];
 
   return (
-    <motion.nav
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "glass shadow-lg shadow-pink-100/50 py-3" : "py-5"
-      }`}
-    >
-      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
-        <a href="#" className="flex items-center gap-2">
-          <span className="text-xl font-black gradient-text">박소영</span>
-          <span className="text-xs text-pink-400 font-medium tracking-widest hidden sm:inline">MARKETING</span>
+    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-[28px] border border-white/80 bg-white/82 px-4 py-3 shadow-[0_16px_50px_rgba(61,76,98,0.12)] backdrop-blur-xl md:px-6">
+        <a href="#top" className="flex items-center gap-3" aria-label="SOYOUNG WORLD 홈">
+          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-pink-300 via-rose-200 to-amber-100 text-rose-700 shadow-inner">
+            <Crown size={22} />
+          </span>
+          <span>
+            <span className="block text-sm font-black tracking-[0.24em] text-slate-900">SOYOUNG</span>
+            <span className="block text-[11px] font-extrabold tracking-[0.22em] text-rose-500">WORLD</span>
+          </span>
         </a>
 
-        <ul className="hidden md:flex items-center gap-8">
-          {links.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                className="text-sm text-gray-600 hover:text-pink-500 font-medium transition-colors relative group"
-              >
-                {l.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-400 to-rose-400 group-hover:w-full transition-all duration-300 rounded-full" />
-              </a>
-            </li>
+        <nav className="hidden items-center gap-7 text-sm font-black text-slate-600 lg:flex">
+          {navItems.map((item) => (
+            <a key={item.href} href={item.href} className="transition hover:text-rose-500">
+              {item.label}
+            </a>
           ))}
-        </ul>
+        </nav>
 
         <a
-          href="https://instagram.com/jinju_about"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden md:flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-pink-400 to-rose-400 text-white text-sm font-semibold shimmer-btn hover:shadow-lg hover:shadow-pink-200 transition-all"
+          href="#contact"
+          className="hidden items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-black text-white shadow-[0_12px_30px_rgba(15,23,42,0.2)] transition hover:-translate-y-0.5 hover:bg-rose-500 md:inline-flex"
         >
-          <Instagram size={14} />
-          @jinju_about
+          MARKETING START
+          <ArrowRight size={16} />
         </a>
 
         <button
-          className="md:hidden text-pink-400"
-          onClick={() => setOpen(!open)}
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          className="grid h-11 w-11 place-items-center rounded-2xl border border-slate-200 bg-white text-slate-800 lg:hidden"
+          aria-label="메뉴 열기"
         >
-          {open ? <X size={24} /> : <Menu size={24} />}
+          {open ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="md:hidden glass border-t border-pink-100 overflow-hidden"
+      {open && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mx-auto mt-2 grid max-w-7xl gap-2 rounded-[24px] border border-white/80 bg-white/95 p-4 shadow-xl backdrop-blur-xl lg:hidden"
+        >
+          {navItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className="rounded-2xl px-4 py-3 text-sm font-black text-slate-700 hover:bg-rose-50 hover:text-rose-500"
+            >
+              {item.label}
+            </a>
+          ))}
+          <a
+            href="#contact"
+            onClick={() => setOpen(false)}
+            className="mt-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white"
           >
-            <ul className="flex flex-col px-6 py-4 gap-4">
-              {links.map((l) => (
-                <li key={l.href}>
-                  <a
-                    href={l.href}
-                    className="text-gray-700 font-medium hover:text-pink-500 transition-colors"
-                    onClick={() => setOpen(false)}
-                  >
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.nav>
+            MARKETING START <ArrowRight size={16} />
+          </a>
+        </motion.div>
+      )}
+    </header>
   );
 }
 
-function HeroSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
-  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-
+function FantasyBackdrop() {
   return (
-    <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden animated-gradient">
-      {/* Decorative blobs */}
-      <div
-        className="absolute top-[-10%] right-[-8%] w-[500px] h-[500px] blob-animate opacity-30"
-        style={{
-          background: "linear-gradient(-45deg, #ffb6c1, #ff69b4, #ffc0cb, #ff1493)",
-          backgroundSize: "400% 400%",
-          animation: "blobMorph 12s ease-in-out infinite, gradientShift 10s ease infinite",
-        }}
-      />
-      <div
-        className="absolute bottom-[-15%] left-[-10%] w-[400px] h-[400px] blob-animate opacity-20"
-        style={{
-          background: "linear-gradient(-45deg, #ffc0cb, #ffb6c1, #ff69b4)",
-          backgroundSize: "400% 400%",
-          animation: "blobMorph 15s ease-in-out infinite 2s, gradientShift 8s ease infinite",
-        }}
-      />
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="cloud cloud-a" />
+      <div className="cloud cloud-b" />
+      <div className="cloud cloud-c" />
+      <div className="star-dot left-[9%] top-[24%]" />
+      <div className="star-dot left-[32%] top-[18%] delay-200" />
+      <div className="star-dot right-[18%] top-[28%] delay-500" />
+      <div className="sparkle-cross left-[16%] top-[52%]" />
+      <div className="sparkle-cross right-[10%] top-[16%] delay-300" />
+      <svg className="absolute bottom-0 left-0 h-[42%] w-full" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 255 C140 180 230 215 340 146 C462 70 580 170 680 116 C805 48 945 90 1045 164 C1155 246 1280 180 1440 105 L1440 420 L0 420 Z" fill="#d8f5e8" />
+        <path d="M0 296 C150 235 300 265 420 210 C570 142 710 252 855 178 C995 106 1155 234 1440 164 L1440 420 L0 420 Z" fill="#bfe7dc" />
+        <path d="M0 340 C220 298 386 332 560 276 C785 203 988 330 1440 248 L1440 420 L0 420 Z" fill="#9fd2bd" />
+      </svg>
+    </div>
+  );
+}
 
-      {/* Floating decorations */}
-      <div className="absolute top-[15%] left-[8%] float-1 opacity-60">
-        <div className="w-12 h-12 rounded-2xl bg-white/60 backdrop-blur flex items-center justify-center shadow-lg shadow-pink-100">
-          <Instagram size={22} className="text-pink-400" />
-        </div>
-      </div>
-      <div className="absolute top-[25%] right-[10%] float-2 opacity-60">
-        <div className="w-10 h-10 rounded-xl bg-white/60 backdrop-blur flex items-center justify-center shadow-lg shadow-pink-100">
-          <Camera size={18} className="text-rose-400" />
-        </div>
-      </div>
-      <div className="absolute bottom-[25%] left-[6%] float-3 opacity-50">
-        <div className="w-14 h-14 rounded-2xl bg-white/60 backdrop-blur flex items-center justify-center shadow-lg shadow-pink-100">
-          <Hash size={24} className="text-pink-500" />
-        </div>
-      </div>
-      <div className="absolute top-[55%] right-[6%] float-1 opacity-50">
-        <div className="w-10 h-10 rounded-xl bg-white/60 backdrop-blur flex items-center justify-center shadow-lg shadow-pink-100">
-          <Star size={18} className="text-yellow-400" />
-        </div>
+function WorldMapVisual() {
+  return (
+    <div className="relative mx-auto aspect-[1.05] w-full max-w-[520px] overflow-hidden rounded-[34px] border border-white/80 bg-gradient-to-br from-sky-100 via-pink-50 to-amber-50 p-5 shadow-[0_30px_90px_rgba(74,91,125,0.2)]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(255,255,255,0.9),transparent_28%),radial-gradient(circle_at_82%_22%,rgba(255,255,255,0.65),transparent_24%),linear-gradient(135deg,rgba(255,255,255,0.35),transparent)]" />
+      <div className="absolute left-8 top-8 rounded-full bg-white/70 px-4 py-2 text-xs font-black tracking-[0.18em] text-rose-500 shadow-sm">
+        WORLD MAP
       </div>
 
-      {/* Sparkle dots */}
-      {[...Array(6)].map((_, i) => (
-        <div
-          key={i}
-          className="absolute sparkle"
-          style={{
-            top: `${15 + i * 12}%`,
-            left: `${20 + i * 13}%`,
-            animationDelay: `${i * 0.4}s`,
-            width: 6, height: 6,
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #ffb6c1, #ff69b4)",
-          }}
-        />
-      ))}
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 520 500" fill="none" aria-hidden="true">
+        <path d="M118 322 C170 250 220 248 262 298 C306 349 360 330 413 260" stroke="#f5a5b9" strokeWidth="7" strokeLinecap="round" strokeDasharray="3 20" />
+        <path d="M58 338 C104 300 147 303 186 338 C220 367 259 365 295 336 C343 298 395 305 462 348 L462 428 L58 428 Z" fill="#7fd0b0" />
+        <path d="M98 334 L138 258 L181 334 Z" fill="#8ec6b0" />
+        <path d="M138 258 L158 295 L120 295 Z" fill="#fff7e5" />
+        <path d="M342 300 L382 216 L430 300 Z" fill="#89bfb2" />
+        <path d="M382 216 L403 258 L363 258 Z" fill="#fff7e5" />
+        <path d="M216 194 C240 165 274 164 300 194 L300 275 L216 275 Z" fill="#ffd6df" />
+        <path d="M236 163 H280 L280 198 H236 Z" fill="#ffaec0" />
+        <path d="M248 136 L280 163 H236 Z" fill="#f48fa8" />
+        <path d="M236 218 H254 V275 H236 Z" fill="#fff9f1" />
+        <circle cx="128" cy="322" r="18" fill="#fff" stroke="#f292ad" strokeWidth="6" />
+        <circle cx="262" cy="298" r="18" fill="#fff" stroke="#80cbe9" strokeWidth="6" />
+        <circle cx="413" cy="260" r="18" fill="#fff" stroke="#99dec4" strokeWidth="6" />
+      </svg>
 
-      <motion.div
-        style={{ y, opacity }}
-        className="relative z-10 text-center px-6 max-w-4xl mx-auto"
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="inline-flex items-center gap-2 pill mb-8 shadow-md shadow-pink-200"
-        >
-          <Sparkles size={12} />
-          <span>SNS 마케팅 전문가</span>
-          <Sparkles size={12} />
+      <div className="absolute bottom-6 left-6 right-6 grid gap-3 rounded-[26px] border border-white/80 bg-white/78 p-4 shadow-[0_18px_50px_rgba(69,87,110,0.12)] backdrop-blur-md sm:grid-cols-[1fr_auto]">
+        <div>
+          <p className="text-xs font-black tracking-[0.2em] text-sky-500">MAIN QUEST</p>
+          <p className="mt-1 text-lg font-black leading-tight text-slate-900">로컬 매장의 발견 확률을 높이는 여정</p>
+        </div>
+        <div className="flex items-center gap-2 rounded-2xl bg-rose-50 px-4 py-3 text-sm font-black text-rose-600">
+          <Gem size={17} /> LEVEL 16+
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SectionTitle({ eyebrow, title, desc }: { eyebrow: string; title: string; desc: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.55 }}
+      className="mx-auto mb-12 max-w-3xl text-center"
+    >
+      <span className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white px-4 py-2 text-xs font-black tracking-[0.22em] text-rose-500 shadow-sm">
+        <Sparkles size={14} /> {eyebrow}
+      </span>
+      <h2 className="mt-5 text-3xl font-black leading-tight text-slate-950 sm:text-5xl">{title}</h2>
+      <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">{desc}</p>
+    </motion.div>
+  );
+}
+
+function Hero() {
+  return (
+    <section id="top" className="relative isolate min-h-screen overflow-hidden bg-gradient-to-b from-sky-200 via-pink-50 to-emerald-100 px-4 pb-16 pt-32 sm:pt-40">
+      <FantasyBackdrop />
+      <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1fr_0.9fr]">
+        <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }}>
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-white/80 px-4 py-2 text-xs font-black tracking-[0.2em] text-rose-500 shadow-sm backdrop-blur">
+            <Star size={14} /> SOYOUNG WORLD OPEN
+          </span>
+          <h1 className="mt-6 max-w-3xl text-5xl font-black leading-[1.06] tracking-[-0.03em] text-slate-950 sm:text-7xl">
+            브랜드 성장의
+            <span className="block text-rose-500">모험을 시작하세요</span>
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg font-semibold leading-9 text-slate-700 sm:text-xl">
+            진주·창원 로컬 매장을 위한 SNS 마케팅 월드. 인스타그램 운영부터 릴스, 블로그, 네이버 플레이스, 진주어때 채널 연계까지 한 흐름으로 설계합니다.
+          </p>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <a href="#contact" className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-7 py-4 text-base font-black text-white shadow-[0_18px_40px_rgba(15,23,42,0.24)] transition hover:-translate-y-1 hover:bg-rose-500">
+              MARKETING START <ArrowRight size={18} />
+            </a>
+            <a href="#portfolio" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/90 bg-white/85 px-7 py-4 text-base font-black text-slate-900 shadow-sm transition hover:-translate-y-1 hover:text-rose-500">
+              포트폴리오 보기 <ChevronRight size={18} />
+            </a>
+          </div>
         </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.35 }}
-          className="text-5xl sm:text-7xl font-black leading-tight mb-6"
-        >
-          <span className="text-gray-800">브랜드를</span>
-          <br />
-          <span className="gradient-text">아름답게</span>
-          <br />
-          <span className="text-gray-800">성장시킵니다</span>
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="text-gray-500 text-lg sm:text-xl mb-10 leading-relaxed max-w-2xl mx-auto"
-        >
-          인스타그램 · 블로그 · 네이버플레이스 · 진주어때
-          <br />
-          <span className="text-pink-500 font-semibold">박소영</span>이 당신의 브랜드 이야기를 전합니다
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.65 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
-          <a
-            href="#contact"
-            className="shimmer-btn flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-pink-400 via-rose-400 to-fuchsia-400 text-white font-bold text-lg shadow-xl shadow-pink-200 hover:shadow-2xl hover:shadow-pink-300 hover:-translate-y-1 transition-all duration-300"
-          >
-            지금 문의하기 <ArrowRight size={20} />
-          </a>
-          <a
-            href="#services"
-            className="flex items-center justify-center gap-2 px-8 py-4 rounded-full glass border-2 border-pink-200 text-pink-500 font-bold text-lg hover:border-pink-400 hover:-translate-y-1 transition-all duration-300"
-          >
-            서비스 보기 <ChevronDown size={20} />
-          </a>
+        <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.65, delay: 0.1 }}>
+          <WorldMapVisual />
         </motion.div>
-
-        {/* Stats row */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.85 }}
-          className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-4"
-        >
-          {STATS.map((s) => (
-            <div key={s.label} className="glass rounded-2xl p-4 card-hover">
-              <s.icon size={22} className="text-pink-400 mb-2 mx-auto" />
-              <div className="text-2xl font-black gradient-text">{s.value}</div>
-              <div className="text-xs text-gray-500 mt-1">{s.label}</div>
-            </div>
-          ))}
-        </motion.div>
-      </motion.div>
-
-      {/* Bottom scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-      >
-        <span className="text-xs text-pink-400 tracking-widest">SCROLL</span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
-          <ChevronDown size={20} className="text-pink-400" />
-        </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }
 
-function AboutSection() {
+function StatsSection() {
   return (
-    <section id="about" className="py-32 relative overflow-hidden bg-white">
-      <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-10"
-        style={{ background: "radial-gradient(circle, #ffb6c1, transparent)" }}
-      />
-
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left: visual */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative"
-          >
-            <div className="relative w-full aspect-square max-w-md mx-auto">
-              {/* Outer ring */}
-              <div className="absolute inset-0 rounded-full border-2 border-dashed border-pink-200 spin-slow" />
-              {/* Main circle */}
-              <div className="absolute inset-8 rounded-full bg-gradient-to-br from-pink-100 to-rose-100 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="text-8xl mb-4">🌸</div>
-                  <div className="font-black text-3xl gradient-text">박소영</div>
-                  <div className="text-sm text-pink-400 font-medium mt-1">SNS 마케터</div>
-                </div>
-              </div>
-              {/* Floating badges */}
-              <div className="absolute top-4 right-4 glass-pink rounded-2xl p-3 float-1 shadow-lg">
-                <Instagram size={20} className="text-pink-500" />
-              </div>
-              <div className="absolute bottom-8 left-2 glass-pink rounded-2xl p-3 float-2 shadow-lg">
-                <MapPin size={20} className="text-rose-500" />
-              </div>
-              <div className="absolute top-1/2 -right-4 glass-pink rounded-2xl p-3 float-3 shadow-lg">
-                <TrendingUp size={20} className="text-fuchsia-500" />
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right: text */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <span className="pill mb-6 inline-block shadow-md shadow-pink-100">
-              <Sparkles size={11} className="mr-1" /> About Me
-            </span>
-            <h2 className="text-4xl sm:text-5xl font-black leading-tight mb-6">
-              <span className="text-gray-800">지역 브랜드의</span>
-              <br />
-              <span className="gradient-text">디지털 파트너</span>
-            </h2>
-            <p className="text-gray-500 leading-relaxed text-lg mb-8">
-              진주 · 창원 지역을 기반으로 소상공인과 로컬 브랜드의
-              온라인 존재감을 만들어드립니다. 단순 업로드가 아닌,
-              <span className="text-pink-500 font-semibold"> 브랜드의 스토리</span>를
-              담아 고객과 진심으로 소통하는 콘텐츠를 만듭니다.
-            </p>
-
-            <div className="space-y-4 mb-8">
-              {[
-                { icon: Instagram, text: "인스타그램 계정 운영 & 성장 전략" },
-                { icon: Globe, text: "네이버 블로그 SEO 최적화 포스팅" },
-                { icon: MapPin, text: "네이버 플레이스 상위 노출 관리" },
-                { icon: Play, text: "진주어때 채널 릴스 & 게시물 제작" },
-              ].map((item) => (
-                <div key={item.text} className="flex items-center gap-3 text-gray-600">
-                  <div className="w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center flex-shrink-0">
-                    <item.icon size={16} className="text-pink-400" />
-                  </div>
-                  <span className="font-medium">{item.text}</span>
-                </div>
-              ))}
-            </div>
-
-            <a
-              href="https://instagram.com/jinju_about"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-pink-400 to-rose-400 text-white font-semibold hover:shadow-lg hover:shadow-pink-200 hover:-translate-y-0.5 transition-all"
+    <section className="relative z-20 -mt-10 px-4" aria-label="운영 지표">
+      <div className="mx-auto grid max-w-7xl gap-4 rounded-[32px] border border-white/80 bg-white/86 p-4 shadow-[0_24px_70px_rgba(71,85,105,0.15)] backdrop-blur-xl sm:grid-cols-2 lg:grid-cols-4">
+        {stats.map((item, index) => {
+          const Icon = item.icon;
+          return (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05 }}
+              className={`stat-card stat-${item.tone}`}
             >
-              <Instagram size={16} />
-              @jinju_about 팔로우
-            </a>
-          </motion.div>
-        </div>
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-black tracking-[0.22em] text-slate-500">{item.label}</p>
+                  <p className="mt-2 text-2xl font-black text-slate-950">{item.value}</p>
+                </div>
+                <span className="grid h-13 w-13 place-items-center rounded-2xl bg-white/80 shadow-inner">
+                  <Icon size={24} />
+                </span>
+              </div>
+              <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/70">
+                <div className="h-full w-[78%] rounded-full bg-current opacity-70" />
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </section>
   );
@@ -483,167 +419,143 @@ function AboutSection() {
 
 function ServicesSection() {
   return (
-    <section id="services" className="py-32 relative overflow-hidden"
-      style={{ background: "linear-gradient(180deg, #fff0f3 0%, #ffffff 100%)" }}
-    >
-      <div className="max-w-6xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="pill mb-4 inline-block shadow-md shadow-pink-100">
-            <Star size={11} className="mr-1" /> Services
-          </span>
-          <h2 className="text-4xl sm:text-5xl font-black text-gray-800 mb-4">
-            제공하는 <span className="gradient-text">서비스</span>
-          </h2>
-          <p className="text-gray-500 text-lg max-w-xl mx-auto">
-            브랜드 성장에 필요한 모든 SNS 마케팅을 한 곳에서 해결하세요
-          </p>
-        </motion.div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {SERVICES.map((svc, i) => (
-            <motion.div
-              key={svc.title}
-              initial={{ opacity: 0, y: 40 }}
+    <section id="services" className="px-4 py-24">
+      <SectionTitle
+        eyebrow="SKILL SELECT"
+        title="매장에 필요한 마케팅 스킬을 조합합니다"
+        desc="직업 선택 화면처럼 보이지만 내용은 실제 운영 서비스입니다. 채널별 역할을 분명히 나누고, 매장의 방문 이유가 고객에게 닿도록 구성합니다."
+      />
+      <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-2 xl:grid-cols-4">
+        {services.map((service, index) => {
+          const Icon = service.icon;
+          return (
+            <motion.article
+              key={service.title}
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className={`relative card-hover rounded-3xl p-6 bg-gradient-to-br ${svc.bg} border border-pink-100 overflow-hidden group`}
+              transition={{ delay: index * 0.05 }}
+              className="group relative overflow-hidden rounded-[28px] border border-white/80 bg-white p-6 shadow-[0_18px_55px_rgba(71,85,105,0.1)]"
             >
-              {/* Background glow on hover */}
-              <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${svc.color} rounded-3xl`}
-                style={{ opacity: 0, mixBlendMode: "multiply" }}
-              />
-
-              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${svc.color} flex items-center justify-center mb-5 shadow-lg shadow-pink-100 group-hover:scale-110 transition-transform`}>
-                <svc.icon size={22} className="text-white" />
+              <div className={`absolute inset-x-0 top-0 h-2 bg-gradient-to-r ${service.color}`} />
+              <div className="flex items-start justify-between gap-4">
+                <div className={`grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br ${service.color} text-white shadow-lg transition group-hover:scale-105`}>
+                  <Icon size={25} />
+                </div>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-black tracking-[0.14em] text-slate-500">{service.level}</span>
               </div>
-
-              <h3 className="font-black text-gray-800 text-lg mb-3 group-hover:text-gray-900">
-                {svc.title}
-              </h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-5">
-                {svc.desc}
-              </p>
-
-              <div className="flex flex-wrap gap-2">
-                {svc.tags.map((tag) => (
-                  <span key={tag} className="text-xs px-3 py-1 rounded-full bg-white/70 text-pink-500 font-medium border border-pink-100">
-                    #{tag}
+              <h3 className="mt-6 text-2xl font-black text-slate-950">{service.title}</h3>
+              <p className="mt-3 min-h-[84px] text-sm font-medium leading-7 text-slate-600">{service.desc}</p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {service.tags.map((tag) => (
+                  <span key={tag} className="rounded-full border border-rose-100 bg-rose-50 px-3 py-1 text-xs font-extrabold text-rose-500">
+                    {tag}
                   </span>
                 ))}
               </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Process flow */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="mt-20 glass rounded-3xl p-8 border border-pink-100"
-        >
-          <h3 className="text-xl font-black text-center text-gray-700 mb-8">
-            📋 진행 프로세스
-          </h3>
-          <div className="grid sm:grid-cols-4 gap-6">
-            {[
-              { step: "01", title: "상담", desc: "업체 파악 및 목표 설정", emoji: "💬" },
-              { step: "02", title: "기획", desc: "콘텐츠 방향성 & 전략 수립", emoji: "📝" },
-              { step: "03", title: "제작", desc: "게시글·릴스 제작 및 업로드", emoji: "✨" },
-              { step: "04", title: "분석", desc: "성과 리포트 & 전략 개선", emoji: "📊" },
-            ].map((p, i) => (
-              <div key={p.step} className="relative text-center">
-                {i < 3 && (
-                  <div className="hidden sm:block absolute top-6 left-[calc(50%+24px)] w-[calc(100%-48px)] h-0.5 bg-gradient-to-r from-pink-300 to-pink-100" />
-                )}
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-rose-400 text-white font-black text-lg flex items-center justify-center mx-auto mb-3 shadow-lg shadow-pink-100">
-                  {p.emoji}
-                </div>
-                <div className="text-xs text-pink-400 font-bold tracking-widest mb-1">STEP {p.step}</div>
-                <div className="font-black text-gray-800">{p.title}</div>
-                <div className="text-xs text-gray-500 mt-1">{p.desc}</div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
+            </motion.article>
+          );
+        })}
       </div>
     </section>
   );
 }
 
-function ClientsSection() {
+function MiniVisual({ kind }: { kind: string }) {
+  const palette: Record<string, string> = {
+    cafe: "from-amber-100 via-rose-100 to-sky-100",
+    terrace: "from-sky-100 via-emerald-100 to-amber-100",
+    nail: "from-pink-100 via-rose-100 to-purple-100",
+    spa: "from-emerald-100 via-sky-100 to-white",
+    dining: "from-amber-100 via-orange-100 to-rose-100",
+    beef: "from-rose-100 via-amber-100 to-orange-100",
+    interior: "from-stone-100 via-sky-100 to-emerald-100",
+    salon: "from-purple-100 via-pink-100 to-white",
+  };
+
   return (
-    <section id="clients" className="py-32 bg-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-5"
-        style={{ backgroundImage: "radial-gradient(circle at 2px 2px, #ff69b4 1px, transparent 0)", backgroundSize: "32px 32px" }}
+    <div className={`relative aspect-[4/3] overflow-hidden rounded-[24px] bg-gradient-to-br ${palette[kind] ?? palette.cafe}`}>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_18%,rgba(255,255,255,0.95),transparent_26%),radial-gradient(circle_at_78%_12%,rgba(255,255,255,0.62),transparent_22%)]" />
+      <div className="absolute bottom-0 left-0 right-0 h-[34%] rounded-t-[50%] bg-emerald-200/65" />
+      <div className="absolute bottom-[24%] left-[16%] h-[31%] w-[28%] rounded-t-full bg-white/78 shadow-lg" />
+      <div className="absolute bottom-[26%] right-[14%] h-[24%] w-[34%] rounded-[22px] bg-white/75 shadow-lg" />
+      <div className="absolute left-[22%] top-[18%] h-[40%] w-2 rotate-12 rounded-full bg-amber-700/20" />
+      <div className="absolute right-[24%] top-[18%] grid h-12 w-12 place-items-center rounded-2xl bg-white/80 text-rose-500 shadow-md">
+        {kind === "interior" ? <ShieldCheck size={23} /> : kind === "dining" || kind === "beef" ? <Store size={23} /> : kind === "spa" || kind === "salon" || kind === "nail" ? <Sparkles size={23} /> : <Camera size={23} />}
+      </div>
+    </div>
+  );
+}
+
+function PortfolioSection() {
+  return (
+    <section id="portfolio" className="bg-white px-4 py-24">
+      <SectionTitle
+        eyebrow="WORLD STAGE"
+        title="업체별 퀘스트 카드로 보는 포트폴리오"
+        desc="실제 이미지 의존 없이 업종별 분위기를 CSS 일러스트로 구성했습니다. 귀엽지만 영업 제안서에 넣어도 어색하지 않은 톤을 목표로 했습니다."
       />
-
-      <div className="max-w-6xl mx-auto px-6 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="pill mb-4 inline-block shadow-md shadow-pink-100">
-            <Heart size={11} className="mr-1" /> Clients
-          </span>
-          <h2 className="text-4xl sm:text-5xl font-black text-gray-800 mb-4">
-            함께하는 <span className="gradient-text">클라이언트</span>
-          </h2>
-          <p className="text-gray-500 text-lg">
-            진주 · 창원 지역의 다양한 브랜드와 성장을 함께합니다
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {CLIENTS.map((c, i) => (
-            <motion.div
-              key={`${c.name}-${c.area}`}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.05 }}
-              className="card-hover glass rounded-2xl p-5 border border-pink-100 text-center group cursor-default"
-            >
-              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform inline-block">
-                {c.emoji}
+      <div className="mx-auto grid max-w-7xl gap-5 md:grid-cols-2 xl:grid-cols-4">
+        {portfolio.map((work, index) => (
+          <motion.article
+            key={work.name}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.035 }}
+            className="group rounded-[30px] border border-slate-100 bg-slate-50 p-3 shadow-[0_18px_60px_rgba(71,85,105,0.08)] transition hover:-translate-y-1 hover:shadow-[0_26px_70px_rgba(71,85,105,0.13)]"
+          >
+            <MiniVisual kind={work.kind} />
+            <div className="p-4">
+              <div className="flex items-center justify-between gap-3">
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-rose-500 shadow-sm">{work.type}</span>
+                <span className="text-xs font-black tracking-[0.16em] text-slate-400">QUEST</span>
               </div>
-              <div className="font-bold text-gray-800 text-sm leading-tight">{c.name}</div>
-              <div className="inline-block mt-2 px-2 py-0.5 rounded-full bg-pink-50 text-pink-400 text-xs font-medium">
-                📍 {c.area}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Trust badges */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="mt-16 flex flex-wrap justify-center gap-6"
-        >
-          {[
-            { icon: Users, text: "16개 업체 관리 중" },
-            { icon: MapPin, text: "진주·창원 지역 기반" },
-            { icon: TrendingUp, text: "꾸준한 팔로워 성장" },
-            { icon: MessageCircle, text: "빠른 소통 & 피드백" },
-          ].map((b) => (
-            <div key={b.text} className="flex items-center gap-2 px-5 py-3 glass rounded-full border border-pink-100 text-gray-600 text-sm font-medium">
-              <b.icon size={15} className="text-pink-400" />
-              {b.text}
+              <h3 className="mt-4 text-xl font-black leading-tight text-slate-950">{work.name}</h3>
+              <p className="mt-3 text-sm font-medium leading-7 text-slate-600">{work.quest}</p>
+              <p className="mt-4 border-t border-slate-200 pt-4 text-xs font-black tracking-[0.08em] text-slate-500">{work.mission}</p>
             </div>
-          ))}
-        </motion.div>
+          </motion.article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ProcessSection() {
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-b from-white to-sky-50 px-4 py-24">
+      <SectionTitle
+        eyebrow="QUEST LINE"
+        title="상담부터 개선까지 한 줄로 이어지는 진행 단계"
+        desc="처음 문의한 뒤 무엇이 진행되는지 명확해야 실제 영업 페이지로 신뢰가 생깁니다. 귀여운 퀘스트 진행바 안에 실무 프로세스를 담았습니다."
+      />
+      <div className="mx-auto max-w-7xl rounded-[34px] border border-white bg-white/75 p-5 shadow-[0_20px_70px_rgba(71,85,105,0.1)] backdrop-blur">
+        <div className="grid gap-4 lg:grid-cols-5">
+          {process.map((step, index) => {
+            const Icon = step.icon;
+            return (
+              <motion.div
+                key={step.title}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.06 }}
+                className="relative rounded-[26px] border border-slate-100 bg-white p-5"
+              >
+                {index < process.length - 1 && <div className="absolute -right-5 top-1/2 hidden h-1 w-6 -translate-y-1/2 rounded-full bg-rose-200 lg:block" />}
+                <div className="flex items-center gap-3">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-sky-100 text-sky-600">
+                    <Icon size={23} />
+                  </span>
+                  <span className="text-xs font-black tracking-[0.2em] text-rose-400">STEP {String(index + 1).padStart(2, "0")}</span>
+                </div>
+                <h3 className="mt-5 text-xl font-black text-slate-950">{step.title}</h3>
+                <p className="mt-2 text-sm font-medium leading-7 text-slate-600">{step.desc}</p>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
@@ -651,111 +563,47 @@ function ClientsSection() {
 
 function PricingSection() {
   return (
-    <section id="pricing" className="py-32 relative overflow-hidden"
-      style={{ background: "linear-gradient(180deg, #fff0f3 0%, #ffe8f0 50%, #fff0f3 100%)" }}
-    >
-      <div className="max-w-5xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="pill mb-4 inline-block shadow-md shadow-pink-100">
-            <BarChart3 size={11} className="mr-1" /> Pricing
-          </span>
-          <h2 className="text-4xl sm:text-5xl font-black text-gray-800 mb-4">
-            합리적인 <span className="gradient-text">가격 안내</span>
-          </h2>
-          <p className="text-gray-500 text-lg">투명하고 명확한 가격으로 부담 없이 시작하세요</p>
-        </motion.div>
-
-        <div className="grid sm:grid-cols-3 gap-6">
-          {PRICING.map((plan, i) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.15 }}
-              className={`relative card-hover rounded-3xl overflow-hidden ${
-                plan.highlight
-                  ? "bg-gradient-to-br from-pink-400 via-rose-400 to-fuchsia-400 text-white glow-pink"
-                  : "glass border border-pink-100 bg-white"
+    <section id="pricing" className="bg-[#fff7ef] px-4 py-24">
+      <SectionTitle
+        eyebrow="ITEM SHOP"
+        title="서비스 가격은 아이템 상점처럼 명확하게"
+        desc="귀여운 패키지 카드 안에서도 금액과 포함 범위는 바로 이해되도록 정리했습니다."
+      />
+      <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-3">
+        {pricing.map((plan) => (
+          <motion.article
+            key={plan.name}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className={`relative overflow-hidden rounded-[30px] border p-7 shadow-[0_18px_60px_rgba(71,85,105,0.1)] ${
+              plan.featured ? "border-slate-950 bg-slate-950 text-white" : "border-white bg-white text-slate-950"
+            }`}
+          >
+            <div className={`mb-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-black tracking-[0.16em] ${plan.featured ? "bg-white/12 text-amber-100" : "bg-rose-50 text-rose-500"}`}>
+              <Gem size={14} /> {plan.badge}
+            </div>
+            <h3 className="text-2xl font-black">{plan.name}</h3>
+            <strong className={`mt-3 block text-4xl font-black ${plan.featured ? "text-white" : "text-rose-500"}`}>{plan.price}</strong>
+            <p className={`mt-5 min-h-[84px] text-sm font-medium leading-7 ${plan.featured ? "text-white/74" : "text-slate-600"}`}>{plan.desc}</p>
+            <ul className="mt-6 grid gap-3">
+              {plan.points.map((point) => (
+                <li key={point} className="flex items-start gap-2 text-sm font-bold">
+                  <CheckCircle2 size={17} className={plan.featured ? "mt-0.5 text-emerald-200" : "mt-0.5 text-emerald-500"} />
+                  {point}
+                </li>
+              ))}
+            </ul>
+            <a
+              href="#contact"
+              className={`mt-7 inline-flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-4 text-sm font-black transition ${
+                plan.featured ? "bg-white text-slate-950 hover:bg-rose-50" : "bg-slate-950 text-white hover:bg-rose-500"
               }`}
             >
-              {plan.highlight && (
-                <div className="absolute top-0 left-0 right-0 h-1 bg-white/30 rounded-t-3xl" />
-              )}
-
-              <div className="p-8">
-                <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-5 ${
-                  plan.highlight
-                    ? "bg-white/20 text-white"
-                    : "bg-pink-50 text-pink-500"
-                }`}>
-                  {plan.badge}
-                </div>
-
-                <h3 className={`font-black text-xl mb-2 ${plan.highlight ? "text-white" : "text-gray-800"}`}>
-                  {plan.name}
-                </h3>
-
-                <div className="mb-6">
-                  <span className={`text-3xl font-black ${plan.highlight ? "text-white" : "gradient-text"}`}>
-                    {plan.price}
-                    <span className="text-base">원</span>
-                  </span>
-                  <span className={`ml-1 text-sm font-medium ${plan.highlight ? "text-white/70" : "text-gray-400"}`}>
-                    {plan.unit}
-                  </span>
-                </div>
-
-                <ul className="space-y-3 mb-6">
-                  {plan.items.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm">
-                      <CheckCircle
-                        size={16}
-                        className={`flex-shrink-0 mt-0.5 ${plan.highlight ? "text-white/80" : "text-pink-400"}`}
-                      />
-                      <span className={plan.highlight ? "text-white/90" : "text-gray-600"}>
-                        {item}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-
-                {plan.sub && (
-                  <p className={`text-xs mb-4 px-3 py-2 rounded-xl ${
-                    plan.highlight ? "bg-white/15 text-white/80" : "bg-pink-50 text-pink-400"
-                  }`}>
-                    ✦ {plan.sub}
-                  </p>
-                )}
-
-                <a
-                  href="#contact"
-                  className={`w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all ${
-                    plan.highlight
-                      ? "bg-white text-pink-500 hover:bg-pink-50"
-                      : "bg-gradient-to-r from-pink-400 to-rose-400 text-white hover:shadow-lg hover:shadow-pink-200"
-                  }`}
-                >
-                  문의하기 <ArrowRight size={14} />
-                </a>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-center text-gray-400 text-sm mt-8"
-        >
-          ✦ 업체 규모 및 서비스 범위에 따라 맞춤 견적 상담 가능합니다
-        </motion.p>
+              패키지 문의 <ArrowRight size={16} />
+            </a>
+          </motion.article>
+        ))}
       </div>
     </section>
   );
@@ -763,102 +611,32 @@ function PricingSection() {
 
 function ContactSection() {
   return (
-    <section id="contact" className="py-32 bg-white relative overflow-hidden">
-      <div className="absolute bottom-0 right-0 w-80 h-80 opacity-10 rounded-full"
-        style={{ background: "radial-gradient(circle, #ff69b4, transparent)" }}
-      />
-
-      <div className="max-w-4xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="pill mb-4 inline-block shadow-md shadow-pink-100">
-            <MessageCircle size={11} className="mr-1" /> Contact
-          </span>
-          <h2 className="text-4xl sm:text-5xl font-black text-gray-800 mb-4">
-            지금 바로 <span className="gradient-text">문의하세요</span>
-          </h2>
-          <p className="text-gray-500 text-lg">브랜드 성장을 위한 첫 걸음, 함께 시작합니다</p>
-        </motion.div>
-
-        <div className="grid sm:grid-cols-2 gap-8">
-          {/* Instagram card */}
-          <motion.a
+    <section id="contact" className="relative overflow-hidden bg-gradient-to-b from-sky-50 via-pink-50 to-white px-4 py-24">
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-[linear-gradient(180deg,transparent,#ffffff)]" />
+      <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[36px] border border-white bg-white/84 p-7 text-center shadow-[0_28px_90px_rgba(71,85,105,0.16)] backdrop-blur md:p-12">
+        <div className="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-3xl bg-gradient-to-br from-rose-300 to-sky-300 text-white shadow-lg">
+          <HeartHandshake size={30} />
+        </div>
+        <p className="text-xs font-black tracking-[0.24em] text-rose-500">FINAL QUEST</p>
+        <h2 className="mt-4 text-3xl font-black leading-tight text-slate-950 sm:text-5xl">마케팅 모험을 시작할 준비가 됐다면</h2>
+        <p className="mx-auto mt-5 max-w-2xl text-base font-medium leading-8 text-slate-600 sm:text-lg">
+          매장 업종, 현재 채널, 원하는 목표를 알려주세요. 진주·창원 로컬 고객에게 자연스럽게 닿는 콘텐츠 흐름을 함께 설계하겠습니다.
+        </p>
+        <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+          <a
             href="https://instagram.com/jinju_about"
             target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="card-hover glass rounded-3xl p-8 border border-pink-100 flex flex-col items-center text-center group"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-7 py-4 text-base font-black text-white transition hover:-translate-y-1 hover:bg-rose-500"
           >
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-400 via-rose-400 to-fuchsia-400 flex items-center justify-center mb-5 shadow-lg shadow-pink-200 group-hover:scale-110 transition-transform">
-              <Instagram size={30} className="text-white" />
-            </div>
-            <h3 className="font-black text-xl text-gray-800 mb-2">인스타그램 DM</h3>
-            <p className="text-pink-500 font-semibold text-lg mb-3">@jinju_about</p>
-            <p className="text-gray-500 text-sm leading-relaxed">
-              인스타그램 DM으로 편하게 문의 주세요.
-              빠른 시간 내 답변 드리겠습니다.
-            </p>
-            <span className="mt-5 inline-flex items-center gap-1 text-pink-400 font-semibold text-sm">
-              DM 보내기 <ArrowRight size={14} />
-            </span>
-          </motion.a>
-
-          {/* Info card */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-4"
+            <InstagramIcon /> @jinju_about 문의
+          </a>
+          <a
+            href="tel:"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-7 py-4 text-base font-black text-slate-900 transition hover:-translate-y-1 hover:border-rose-200 hover:text-rose-500"
           >
-            <div className="glass rounded-3xl p-6 border border-pink-100">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-100 to-rose-100 flex items-center justify-center">
-                  <MapPin size={20} className="text-pink-500" />
-                </div>
-                <div>
-                  <div className="font-black text-gray-800">담당자</div>
-                  <div className="text-gray-500">박소영 마케터</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="glass rounded-3xl p-6 border border-pink-100">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-100 to-rose-100 flex items-center justify-center">
-                  <MapPin size={20} className="text-rose-500" />
-                </div>
-                <div>
-                  <div className="font-black text-gray-800">활동 지역</div>
-                  <div className="text-gray-500">경남 진주 · 창원 중심</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="glass rounded-3xl p-6 border border-pink-100">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-100 to-rose-100 flex items-center justify-center">
-                  <BarChart3 size={20} className="text-fuchsia-500" />
-                </div>
-                <div>
-                  <div className="font-black text-gray-800">전문 채널</div>
-                  <div className="text-gray-500">인스타 · 블로그 · 플레이스 · 진주어때</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="glass rounded-3xl p-6 border border-pink-100 bg-gradient-to-br from-pink-50 to-rose-50">
-              <p className="text-gray-600 text-sm leading-relaxed">
-                💬 <span className="font-semibold text-pink-500">맞춤 상담</span> 가능합니다.<br />
-                업체 규모와 목표에 따라 최적의 패키지를 제안해 드립니다.
-              </p>
-            </div>
-          </motion.div>
+            <Phone size={18} /> 전화 문의
+          </a>
         </div>
       </div>
     </section>
@@ -867,75 +645,34 @@ function ContactSection() {
 
 function Footer() {
   return (
-    <footer className="relative overflow-hidden py-16"
-      style={{ background: "linear-gradient(135deg, #ff69b4 0%, #ff1493 50%, #c71585 100%)" }}
-    >
-      <div className="absolute inset-0 opacity-10"
-        style={{ backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "24px 24px" }}
-      />
-
-      <div className="max-w-6xl mx-auto px-6 relative">
-        <div className="grid sm:grid-cols-3 gap-10 mb-12">
-          <div>
-            <div className="text-white font-black text-2xl mb-3">박소영</div>
-            <div className="text-white/70 text-sm font-medium tracking-widest mb-4">SNS MARKETING</div>
-            <p className="text-white/60 text-sm leading-relaxed">
-              지역 브랜드의 디지털 성장을 함께하는 SNS 마케팅 파트너
-            </p>
-          </div>
-
-          <div>
-            <div className="text-white font-bold mb-4">서비스</div>
-            <ul className="space-y-2 text-white/70 text-sm">
-              <li>인스타그램 관리</li>
-              <li>네이버 블로그 포스팅</li>
-              <li>네이버 플레이스 관리</li>
-              <li>진주어때 채널 연계</li>
-            </ul>
-          </div>
-
-          <div>
-            <div className="text-white font-bold mb-4">연락처</div>
-            <a
-              href="https://instagram.com/jinju_about"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-white/80 hover:text-white text-sm transition-colors"
-            >
-              <Instagram size={15} />
-              @jinju_about
-            </a>
-            <p className="text-white/60 text-sm mt-3">📍 경남 진주 · 창원</p>
-          </div>
+    <footer className="bg-slate-950 px-4 py-12 text-white">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="text-lg font-black tracking-[0.24em]">SOYOUNG WORLD</p>
+          <p className="mt-2 text-sm font-medium text-white/55">진주·창원 로컬 매장을 위한 SNS 마케팅 포트폴리오</p>
         </div>
-
-        <div className="border-t border-white/20 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-white/50 text-sm">© 2025 박소영 마케팅. All rights reserved.</p>
-          <div className="flex items-center gap-2 text-white/50 text-sm">
-            <Heart size={12} className="text-white/60" />
-            Made with love for local brands
-          </div>
+        <div className="flex flex-wrap gap-3 text-sm font-bold text-white/70">
+          <span>Instagram</span>
+          <span>@jinju_about</span>
+          <span>Jinju · Changwon</span>
         </div>
       </div>
     </footer>
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
-
 export default function Home() {
   return (
-    <>
-      <Navbar />
-      <main>
-        <HeroSection />
-        <AboutSection />
-        <ServicesSection />
-        <ClientsSection />
-        <PricingSection />
-        <ContactSection />
-      </main>
+    <main className="min-h-screen overflow-hidden bg-[#f7fbff] text-slate-950">
+      <Header />
+      <Hero />
+      <StatsSection />
+      <ServicesSection />
+      <PortfolioSection />
+      <ProcessSection />
+      <PricingSection />
+      <ContactSection />
       <Footer />
-    </>
+    </main>
   );
 }
