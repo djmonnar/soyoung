@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7fbff;
-  --foreground: #0f172a;
+  --background: #dff6ff;
+  --foreground: #3b2516;
 }
 
 * {
@@ -24,39 +24,50 @@ body {
     "Malgun Gothic",
     system-ui,
     sans-serif;
-  word-break: keep-all;
   overflow-x: hidden;
+  word-break: keep-all;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+img {
+  display: block;
 }
 
 ::selection {
-  background: #fecdd3;
-  color: #0f172a;
+  background: #ffe66b;
+  color: #3b2516;
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f8fafc;
+  background: #fff9df;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #f9a8d4, #7dd3fc);
+  background: #8a541f;
+  border: 2px solid #fff9df;
   border-radius: 999px;
 }
 
-.cloud {
+.cloud-puff {
   position: absolute;
-  height: 62px;
-  width: 180px;
+  width: 174px;
+  height: 58px;
+  border: 4px solid rgba(93, 132, 150, 0.12);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.76);
-  filter: drop-shadow(0 18px 30px rgba(125, 152, 180, 0.12));
+  background: rgba(255, 255, 255, 0.82);
+  filter: drop-shadow(0 10px 0 rgba(90, 130, 150, 0.06));
 }
 
-.cloud::before,
-.cloud::after {
+.cloud-puff::before,
+.cloud-puff::after {
   content: "";
   position: absolute;
   bottom: 18px;
@@ -64,123 +75,16 @@ body {
   background: inherit;
 }
 
-.cloud::before {
-  left: 28px;
-  height: 76px;
-  width: 76px;
+.cloud-puff::before {
+  left: 24px;
+  width: 70px;
+  height: 70px;
 }
 
-.cloud::after {
-  right: 34px;
-  height: 92px;
-  width: 92px;
-}
-
-.cloud-a {
-  left: 6%;
-  top: 16%;
-  animation: cloudFloat 18s ease-in-out infinite;
-}
-
-.cloud-b {
-  right: 10%;
-  top: 13%;
-  transform: scale(0.82);
-  animation: cloudFloat 22s ease-in-out infinite reverse;
-}
-
-.cloud-c {
-  left: 42%;
-  top: 28%;
-  transform: scale(0.58);
-  animation: cloudFloat 20s ease-in-out infinite;
-}
-
-.star-dot {
-  position: absolute;
-  height: 8px;
-  width: 8px;
-  border-radius: 999px;
-  background: #fff7ad;
-  box-shadow: 0 0 0 8px rgba(255, 247, 173, 0.16), 0 0 30px rgba(251, 191, 36, 0.42);
-  animation: twinkle 2.6s ease-in-out infinite;
-}
-
-.sparkle-cross {
-  position: absolute;
-  height: 22px;
-  width: 22px;
-  animation: twinkle 2.9s ease-in-out infinite;
-}
-
-.sparkle-cross::before,
-.sparkle-cross::after {
-  content: "";
-  position: absolute;
-  inset: 50% auto auto 50%;
-  border-radius: 999px;
-  background: white;
-  transform: translate(-50%, -50%);
-}
-
-.sparkle-cross::before {
-  height: 22px;
-  width: 4px;
-}
-
-.sparkle-cross::after {
-  height: 4px;
-  width: 22px;
-}
-
-.stat-card {
-  border-radius: 24px;
-  padding: 22px;
-  color: #0f172a;
-}
-
-.stat-rose {
-  background: linear-gradient(135deg, #ffe4ec, #fff7ed);
-  color: #e11d48;
-}
-
-.stat-sky {
-  background: linear-gradient(135deg, #dff6ff, #f0f9ff);
-  color: #0284c7;
-}
-
-.stat-mint {
-  background: linear-gradient(135deg, #d9fff0, #effdf6);
-  color: #059669;
-}
-
-.stat-violet {
-  background: linear-gradient(135deg, #f0e7ff, #fff1f8);
-  color: #8b5cf6;
-}
-
-@keyframes cloudFloat {
-  0%,
-  100% {
-    margin-left: 0;
-    margin-top: 0;
-  }
-  50% {
-    margin-left: 28px;
-    margin-top: -10px;
-  }
-}
-
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0.45;
-    transform: scale(0.85) rotate(0deg);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.08) rotate(12deg);
-  }
+.cloud-puff::after {
+  right: 28px;
+  width: 86px;
+  height: 86px;
 }
 
 @media (prefers-reduced-motion: reduce) {
