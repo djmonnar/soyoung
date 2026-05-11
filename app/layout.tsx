@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Redesign from "./Redesign";
 
 export const metadata: Metadata = {
   title: "박소영 | SNS 마케팅 포트폴리오",
@@ -10,14 +11,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout() {
   return (
     <html lang="ko" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full">
+        <Redesign />
+      </body>
     </html>
   );
 }
