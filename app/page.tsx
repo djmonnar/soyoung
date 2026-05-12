@@ -19,7 +19,7 @@ import {
 
 const basePath = process.env.NODE_ENV === "production" ? "/soyoung" : "";
 const asset = (path: string) => `${basePath}${path}`;
-const heroPhoto = "/portfolio/angssomarketing-main.jpg";
+const heroPhoto = "/portfolio/jinju-about-profile.jpg";
 
 const navItems = [
   { href: "#portfolio", label: "포트폴리오" },
