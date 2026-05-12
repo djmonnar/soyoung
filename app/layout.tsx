@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "앵쏘정보통 마케팅 | SNS 마케팅 포트폴리오",
+  title: "진주어때 마케팅 | jinju_about 로컬 마케팅 포트폴리오",
   description:
-    "진주와 창원 로컬 매장을 위한 인스타그램 운영, 릴스 제작, 블로그 포스팅, 네이버 플레이스 관리 포트폴리오.",
+    "진주어때(jinju_about)를 기반으로 진주·경남 로컬 매장을 위한 네이버 플레이스, 릴스, 블로그 마케팅을 운영합니다.",
   openGraph: {
-    title: "앵쏘정보통 마케팅 | SNS 마케팅 포트폴리오",
-    description: "진주와 창원 로컬 매장을 위한 SNS 마케팅 포트폴리오.",
+    title: "진주어때 마케팅 | jinju_about 로컬 마케팅 포트폴리오",
+    description: "진주·경남 로컬 매장을 위한 네이버 플레이스, 릴스, 블로그 마케팅.",
   },
 };
 

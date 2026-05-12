@@ -30,18 +30,18 @@ const navItems = [
 ];
 
 const stats = [
-  ["진행 업체", "16+"],
+  ["진행 업체", "20+"],
   ["월 콘텐츠", "60+"],
-  ["운영 채널", "SNS · Blog · Place"],
-  ["지역", "진주 · 창원"],
+  ["운영 채널", "Place · Reels · Blog"],
+  ["지역", "진주 · 경남"],
 ];
 
 const services = [
   {
-    title: "인스타그램 운영",
-    desc: "매장의 분위기와 강점이 한눈에 보이도록 피드 흐름, 문구, 업로드 일정을 관리합니다.",
+    title: "진주어때 채널 연계",
+    desc: "진주어때(jinju_about) 인스타그램 채널을 기반으로 매장 노출과 콘텐츠 확산 흐름을 설계합니다.",
     icon: InstagramIcon,
-    tags: ["피드 기획", "계정 관리", "해시태그"],
+    tags: ["jinju_about", "채널 연계", "로컬 노출"],
   },
   {
     title: "릴스 · 숏폼 제작",
@@ -51,9 +51,9 @@ const services = [
   },
   {
     title: "블로그 포스팅",
-    desc: "검색 키워드와 방문 이유를 자연스럽게 엮어 네이버 블로그 콘텐츠를 작성합니다.",
+    desc: "네이버 블로그에서 검색되는 키워드와 방문 이유를 자연스럽게 엮어 콘텐츠를 작성합니다.",
     icon: BookOpenText,
-    tags: ["SEO", "키워드", "후기형 글"],
+    tags: ["네이버 블로그", "SEO", "키워드"],
   },
   {
     title: "네이버 플레이스 관리",
@@ -72,7 +72,7 @@ const portfolio = [
     scope: "인스타그램 운영 · 콘텐츠 기획",
   },
   {
-    name: "창원 테라스 라운지",
+    name: "경남 테라스 라운지",
     type: "카페 · 라운지",
     image: "/portfolio/terrace.webp",
     desc: "테라스 공간감을 보여주는 릴스와 이미지 구성",
@@ -138,10 +138,10 @@ const pricing = [
     featured: false,
   },
   {
-    name: "진주이야기 패키지",
+    name: "진주어때 패키지",
     price: "280,000원~",
-    desc: "진주이야기 채널 연계 릴스 제작과 로컬 노출 패키지입니다.",
-    items: ["채널 연계 노출", "릴스 제작", "지역 타깃 홍보"],
+    desc: "진주어때(jinju_about) 채널 연계 릴스 제작과 로컬 노출 패키지입니다.",
+    items: ["진주어때 채널 연계", "릴스 제작", "지역 타깃 홍보"],
     featured: false,
   },
 ];
@@ -173,10 +173,10 @@ function Header() {
     <header className="sticky top-0 z-50 border-b border-[#dfd5c8] bg-[#fffaf4]/95 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <a href="#top" className="flex items-center gap-3 text-[#32261f]">
-          <span className="grid h-11 w-11 place-items-center rounded-full bg-[#32261f] text-sm font-black text-white">앵쏘</span>
+          <span className="grid h-11 w-11 place-items-center rounded-full bg-[#32261f] text-sm font-black text-white">진주</span>
           <span>
-            <span className="block text-lg font-black leading-none">앵쏘정보통</span>
-            <span className="block text-xs font-bold tracking-[0.12em] text-[#957866]">MARKETING</span>
+            <span className="block text-lg font-black leading-none">진주어때 마케팅</span>
+            <span className="block text-xs font-bold tracking-[0.12em] text-[#957866]">jinju_about</span>
           </span>
         </a>
 
@@ -188,8 +188,8 @@ function Header() {
           ))}
         </nav>
 
-        <a href="#contact" className="hidden rounded-md bg-[#32261f] px-5 py-3 text-sm font-black text-white md:inline-flex">
-          상담 문의
+        <a href="tel:01088853744" className="hidden rounded-md bg-[#32261f] px-5 py-3 text-sm font-black text-white md:inline-flex">
+          010-8885-3744
         </a>
 
         <button
@@ -229,7 +229,7 @@ function HeroPhoto() {
       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/28 to-transparent" />
       <div className="absolute bottom-5 left-5 flex items-center gap-2 rounded-md bg-white/88 px-4 py-3 text-sm font-black text-[#32261f] shadow-sm backdrop-blur">
         <ImageIcon size={18} />
-        앵쏘정보통 마케팅
+        jinju_about 마케팅
       </div>
     </div>
   );
@@ -251,18 +251,21 @@ function Hero() {
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
         <div className="flex flex-col justify-center py-6 lg:py-16">
           <span className="inline-flex w-fit items-center gap-2 rounded-md border border-[#d8cabc] bg-white px-4 py-2 text-xs font-black tracking-[0.16em] text-[#957866]">
-            <Sparkles size={15} /> 앵쏘정보통 마케팅
+            <Sparkles size={15} /> jinju_about 기반 로컬 마케팅
           </span>
           <h1 className="mt-6 text-4xl font-black leading-tight text-[#32261f] sm:text-6xl">
-            매장의 첫인상을
-            <span className="block text-[#9c5b43]">콘텐츠로 정리합니다</span>
+            네이버 플레이스와
+            <span className="block text-[#9c5b43]">릴스·블로그를 함께 운영합니다</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg font-semibold leading-9 text-[#5f4f45]">
-            진주와 창원 로컬 매장을 위한 SNS 마케팅 포트폴리오입니다. 인스타그램 운영, 릴스 제작, 블로그 포스팅, 네이버 플레이스 관리를 한 흐름으로 다룹니다.
+            진주어때(jinju_about) 인스타그램 채널을 기반으로 진주·경남 로컬 매장의 네이버 플레이스, 릴스, 블로그 콘텐츠를 한 흐름으로 운영합니다.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a href="#contact" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#32261f] px-7 py-4 font-black text-white">
               상담 문의 <ArrowRight size={18} />
+            </a>
+            <a href="https://blog.naver.com/th12dud" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-md border border-[#d8cabc] bg-white px-7 py-4 font-black text-[#32261f]">
+              블로그 보기
             </a>
             <a href="#portfolio" className="inline-flex items-center justify-center rounded-md border border-[#d8cabc] bg-white px-7 py-4 font-black text-[#32261f]">
               포트폴리오 보기
@@ -293,7 +296,7 @@ function Stats() {
 function Services() {
   return (
     <section id="services" className="bg-[#fffaf4] px-4 py-20">
-      <SectionTitle kicker="SERVICE" title="필요한 채널을 정확하게 운영합니다" desc="매장에 맞는 분위기는 살리고, 서비스 설명과 실제 상담까지 이어질 수 있게 정리합니다." />
+      <SectionTitle kicker="SERVICE" title="플레이스·릴스·블로그를 함께 설계합니다" desc="진주어때(jinju_about) 채널 기반의 로컬 노출과 네이버 검색 흐름을 함께 고려해 운영합니다." />
       <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-2 lg:grid-cols-4">
         {services.map((service, index) => {
           const Icon = service.icon;
@@ -331,7 +334,7 @@ function Services() {
 function Portfolio() {
   return (
     <section id="portfolio" className="bg-[#f3ece4] px-4 py-20">
-      <SectionTitle kicker="PORTFOLIO" title="업종별 작업 사례" desc="각 업체의 업종과 분위기에 맞춰 콘텐츠 톤, 이미지 흐름, 노출 목적을 다르게 설계합니다." />
+      <SectionTitle kicker="PORTFOLIO" title="업종별 작업 사례" desc="각 업체의 업종과 분위기에 맞춰 플레이스 정보, 릴스 소재, 블로그 키워드 흐름을 다르게 설계합니다." />
       <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-4">
         {portfolio.map((work, index) => (
           <motion.article
@@ -412,16 +415,19 @@ function Contact() {
     <section id="contact" className="bg-[#fffaf4] px-4 py-20">
       <div className="mx-auto max-w-4xl rounded-md border border-[#dfd5c8] bg-white p-8 text-center md:p-12">
         <MessageCircle className="mx-auto text-[#9c5b43]" size={42} />
-        <h2 className="mt-4 text-3xl font-black text-[#32261f] sm:text-5xl">로컬 매장에 맞는 운영안을 제안드립니다</h2>
+        <h2 className="mt-4 text-3xl font-black text-[#32261f] sm:text-5xl">진주어때 기반의 운영안을 제안드립니다</h2>
         <p className="mx-auto mt-5 max-w-2xl text-base font-semibold leading-8 text-[#62554d]">
-          업종, 현재 채널 상태, 원하는 목표를 알려주시면 필요한 콘텐츠와 운영 범위를 정리해드립니다.
+          업종, 현재 채널 상태, 원하는 목표를 알려주시면 네이버 플레이스, 릴스, 블로그 운영 범위를 정리해드립니다.
         </p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <a href="https://instagram.com/jinju_about" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md bg-[#32261f] px-7 py-4 font-black text-white">
             <InstagramIcon size={18} /> @jinju_about 문의
           </a>
-          <a href="tel:" className="inline-flex items-center justify-center gap-2 rounded-md border border-[#d8cabc] bg-white px-7 py-4 font-black text-[#32261f]">
-            <Phone size={18} /> 전화 문의
+          <a href="https://blog.naver.com/th12dud" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-md border border-[#d8cabc] bg-white px-7 py-4 font-black text-[#32261f]">
+            <BookOpenText size={18} /> 블로그 보기
+          </a>
+          <a href="tel:01088853744" className="inline-flex items-center justify-center gap-2 rounded-md border border-[#d8cabc] bg-white px-7 py-4 font-black text-[#32261f]">
+            <Phone size={18} /> 010-8885-3744
           </a>
         </div>
       </div>
@@ -441,7 +447,7 @@ export default function Home() {
       <Pricing />
       <Contact />
       <footer className="border-t border-[#dfd5c8] bg-[#32261f] px-4 py-8 text-center text-sm font-bold text-[#f8eadc]">
-        앵쏘정보통 마케팅 · Jinju & Changwon Local SNS Marketing
+        jinju_about · 진주어때 기반 네이버 플레이스 · 릴스 · 블로그 마케팅
       </footer>
     </main>
   );
